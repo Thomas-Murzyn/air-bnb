@@ -1,5 +1,8 @@
 import React from "react";
 import { useState } from "react";
+import axios from "axios";
+import { useNavigation } from "@react-navigation/core";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   TouchableOpacity,
   Text,
@@ -10,8 +13,16 @@ import {
 } from "react-native";
 
 export default function SignUpScreen({ setToken }) {
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [description, setDescription] = useState("");
+
+  const navigation = useNavigation();
+
   return (
-    <View>
+    <KeyboardAwareScrollView>
       <View>
         <View style={styles.logo}>
           <Image
@@ -22,11 +33,26 @@ export default function SignUpScreen({ setToken }) {
         </View>
 
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} placeholder="email" />
-
-          <TextInput style={styles.input} placeholder="userName" />
+          <TextInput
+            onChangeText={(text) => {
+              setEmail(text);
+            }}
+            style={styles.input}
+            placeholder="email"
+          />
 
           <TextInput
+            onChangeText={(text) => {
+              setUserName(text);
+            }}
+            style={styles.input}
+            placeholder="userName"
+          />
+
+          <TextInput
+            onChangeText={(text) => {
+              setDescription(text);
+            }}
             style={styles.multilineInput}
             multiline={true}
             numberOfLines={5}
@@ -34,12 +60,18 @@ export default function SignUpScreen({ setToken }) {
           />
 
           <TextInput
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
             style={styles.input}
             placeholder="Password"
             secureTextEntry={true}
           />
 
           <TextInput
+            onChangeText={(text) => {
+              setConfirmPassword(text);
+            }}
             style={styles.input}
             placeholder="confirm password"
             secureTextEntry={true}
@@ -48,8 +80,26 @@ export default function SignUpScreen({ setToken }) {
           <TouchableOpacity
             style={styles.buttonValidationSignUp}
             onPress={async () => {
-              const userToken = "secret-token";
-              setToken(userToken);
+              try {
+                if (password === confirmPassword) {
+                  const response = await axios.post(
+                    "https://express-airbnb-api.herokuapp.com/user/sign_up",
+                    {
+                      email: email,
+                      username: userName,
+                      password: password,
+                      description: description,
+                    }
+                  );
+
+                  console.log("success");
+                  setToken(response.data.token);
+                } else {
+                  alert("mot de passe et/ou mail incorrect");
+                }
+              } catch (error) {
+                console.log(error.message);
+              }
             }}
           >
             <Text>Sign up</Text>
@@ -57,7 +107,7 @@ export default function SignUpScreen({ setToken }) {
 
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("SignUp");
+              navigation.navigate("SignIn");
             }}
           >
             <Text style={styles.createAccount}>
@@ -66,7 +116,7 @@ export default function SignUpScreen({ setToken }) {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 

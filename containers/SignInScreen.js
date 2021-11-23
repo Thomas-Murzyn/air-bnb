@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/core";
 import axios from "axios";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import {
   Button,
   Text,
@@ -18,7 +19,7 @@ export default function SignInScreen({ setToken }) {
 
   const navigation = useNavigation();
   return (
-    <View>
+    <KeyboardAwareScrollView>
       <View>
         <View style={styles.logo}>
           <Image
@@ -54,13 +55,11 @@ export default function SignInScreen({ setToken }) {
                   {
                     email: email,
                     password: password,
-                  },
-                  {
-                    headers: email,
                   }
                 );
 
-                console.log(response.data);
+                console.log("success");
+                setToken(response.data.token);
               } catch (error) {
                 console.log(error.message);
               }
@@ -78,7 +77,7 @@ export default function SignInScreen({ setToken }) {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </KeyboardAwareScrollView>
   );
 }
 
