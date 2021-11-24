@@ -88,8 +88,6 @@ export default function App() {
                         name="Home"
                         options={{
                           title: "My App",
-                          headerStyle: { backgroundColor: "red" },
-                          headerTitleStyle: { color: "white" },
                         }}
                       >
                         {() => <HomeScreen />}
